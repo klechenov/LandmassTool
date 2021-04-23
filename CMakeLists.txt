@@ -13,20 +13,17 @@ find_package(Qt5OpenGL REQUIRED)
 find_package(Qt5Xml REQUIRED)
 find_package(Qt5Widgets REQUIRED)
 
-set(INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include")
 set(SOURCE_DIR "${CMAKE_SOURCE_DIR}/src")
 
-include_directories(${INCLUDE_DIR})
 include_directories(${SOURCE_DIR})
 
 file(GLOB_RECURSE SOURCES
-		"${INCLUDE_DIR}/*.h"
+		"${SOURCE_DIR}/*.h"
 		"${SOURCE_DIR}/*.cpp"
 )
 
 add_executable(LandmassTool ${SOURCES})
 
-target_include_directories(LandmassTool PRIVATE ${INCLUDE_DIR})
 target_include_directories(LandmassTool PRIVATE ${SOURCE_DIR})
 
 target_link_libraries(LandmassTool Qt5::OpenGL)
