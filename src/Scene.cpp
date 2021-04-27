@@ -60,6 +60,10 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent* event)
 
 void Scene::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 {
+	if (!m_LeftButtonPressed)
+	{
+		return;
+	}
 	m_MouseMoved = true;
 
 	if (m_Mode == Modes::Pen && m_DrawningPath)
@@ -84,17 +88,17 @@ void Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 		return;
 	}
 
-	if (m_Mode == Modes::Pen)
+	if (m_Mode == Modes::Pen && m_DrawningPath)
 	{
-		if (!m_MouseMoved && m_DrawningPath)
+		if (!m_MouseMoved)
 		{
 			m_DrawningPath->SetEllipseDrawSetting();
 			QPainterPath path = m_DrawningPath->path();
 			path.addEllipse(event->scenePos(), WIDTH / 2, WIDTH / 2);
-			m_DrawningPath->setPath(path);
+			m_DrawningPath->setPath(path);			
+		}
 
-			m_DrawningPath = nullptr;
-		}		
+		m_DrawningPath = nullptr;
 	}
 	else if (m_Mode == Modes::Selector)
 	{
