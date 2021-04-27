@@ -1,12 +1,14 @@
+#pragma once
 #include <QApplication>
-#include <QPushButton>
 
-int main(int argc, char** argv)
+#include <Window.h>
+
+int main(int argc, char* argv[])
 {
 	QApplication app(argc, argv);
 
-	QPushButton button("Hello world !");
-	button.show();
+	Window mainWindow;
+	mainWindow.show();
 
 	return app.exec();
 }
