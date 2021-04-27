@@ -4,13 +4,20 @@
 #include <QObject>
 #include <QPainter>
 
-class Figure : public QObject, public QGraphicsPathItem
+static constexpr qreal WIDTH = 80;
+
+class Figure final : public QObject, public QGraphicsPathItem
 {
 	Q_OBJECT
 
 public:
 
 	Figure();
+
+	void SetEllipseDrawSetting();
+	void SetLineDrawSetting();
+
+	inline bool IsEmpty() const { return path().isEmpty(); };
 
 private:
 

@@ -1,8 +1,9 @@
 #pragma once
+#include <Figure.h>
+
 #include <QGraphicsScene>
-#include <QPainter>
-#include <QBrush>
-class Scene : public QGraphicsScene
+
+class Scene final : public QGraphicsScene
 {
 
 	Q_OBJECT
@@ -27,9 +28,9 @@ private:
 		Eraser
 	};
 
-	QPointF m_PreviousPosition;
-	QGraphicsPathItem* m_DrawningPath = nullptr;
+	Figure* m_DrawningPath = nullptr;
 	Modes m_Mode = Modes::Pen;
 	bool m_LeftButtonPressed = false;
+	bool m_MouseMoved = false;
 
 };

@@ -1,7 +1,7 @@
 #pragma once
-#include <QApplication>
-
 #include <Window.h>
+
+#include <QApplication>
 
 int main(int argc, char* argv[])
 {

@@ -1,11 +1,9 @@
 #pragma once
 #include <Scene.h>
-#include <Figure.h>
 
-#include <QGraphicsPathItem>
 #include <QGraphicsSceneMouseEvent>
-#include <QPainterPath>
 #include <QKeyEvent>
+#include <QPainterPath>
 
 Scene::~Scene()
 {
@@ -36,17 +34,18 @@ void Scene::keyPressEvent(QKeyEvent* keyEvent)
 
 void Scene::mousePressEvent(QGraphicsSceneMouseEvent* event)
 {
-	if (event->button() == Qt::MouseButton::LeftButton)
+	if (event->button() != Qt::MouseButton::LeftButton)
 	{
-		m_LeftButtonPressed = true;
+		return;
 	}
+
+	m_LeftButtonPressed = true;
 
 	if (m_Mode == Modes::Pen)
 	{
 		m_DrawningPath = new Figure();
-		m_PreviousPosition = event->scenePos();
 		QPainterPath path;
-		path.moveTo(m_PreviousPosition);
+		path.moveTo(event->scenePos());
 		m_DrawningPath->setPath(path);
 
 		addItem(m_DrawningPath);
@@ -61,16 +60,18 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent* event)
 
 void Scene::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 {
+	m_MouseMoved = true;
+
 	if (m_Mode == Modes::Pen && m_DrawningPath)
 	{
+		m_DrawningPath->SetLineDrawSetting();
 		QPainterPath path = m_DrawningPath->path();
-		m_PreviousPosition = event->scenePos();
-		path.lineTo(m_PreviousPosition);
+		path.lineTo(event->scenePos());
 		m_DrawningPath->setPath(path);
 	}
 	else if (m_Mode == Modes::Selector)
 	{
-		QGraphicsScene::mousePressEvent(event);
+		QGraphicsScene::mouseMoveEvent(event);
 	}
 
 	update();
@@ -78,19 +79,30 @@ void Scene::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 
 void Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
-	if (event->button() == Qt::MouseButton::LeftButton)
+	if (event->button() != Qt::MouseButton::LeftButton)
 	{
-		m_LeftButtonPressed = false;
+		return;
 	}
 
 	if (m_Mode == Modes::Pen)
 	{
-		m_DrawningPath = nullptr;
+		if (!m_MouseMoved && m_DrawningPath)
+		{
+			m_DrawningPath->SetEllipseDrawSetting();
+			QPainterPath path = m_DrawningPath->path();
+			path.addEllipse(event->scenePos(), WIDTH / 2, WIDTH / 2);
+			m_DrawningPath->setPath(path);
+
+			m_DrawningPath = nullptr;
+		}		
 	}
 	else if (m_Mode == Modes::Selector)
 	{
-		QGraphicsScene::mousePressEvent(event);
+		QGraphicsScene::mouseReleaseEvent(event);
 	}
+
+	m_LeftButtonPressed = false;
+	m_MouseMoved = false;
 
 	update();
 }

@@ -1,11 +1,11 @@
 #pragma once
+#include <Scene.h>
+
 #include <QGraphicsView>
 #include <QVBoxLayout>
 #include <QWidget>
 
-#include <Scene.h>
-
-class Window : public QWidget
+class Window final : public QWidget
 {
 	Q_OBJECT
 
