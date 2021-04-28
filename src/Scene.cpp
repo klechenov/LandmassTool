@@ -69,7 +69,7 @@ void Scene::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 
 	if (m_Mode == Modes::Pen && m_CurrentUsedFigure)
 	{
-		m_CurrentUsedFigure->SetLineDrawSetting();
+		m_CurrentUsedFigure->SetFigureType(FigureType::Line);
 		QPainterPath path = m_CurrentUsedFigure->path();
 		path.lineTo(event->scenePos());
 		m_CurrentUsedFigure->setPath(path);
@@ -93,7 +93,7 @@ void Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 	{
 		if (!m_MouseMoved)
 		{
-			m_CurrentUsedFigure->SetEllipseDrawSetting();
+			m_CurrentUsedFigure->SetFigureType(FigureType::Ellipse);
 			QPainterPath path = m_CurrentUsedFigure->path();
 			path.addEllipse(event->scenePos(), WIDTH / 2, WIDTH / 2);
 			m_CurrentUsedFigure->setPath(path);

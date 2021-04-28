@@ -8,6 +8,21 @@ Figure::Figure(Scene* scene)
 		: m_Scene(scene)
 {
 	m_Stroker.setWidth(WIDTH);
+	m_Stroker.setCapStyle(Qt::PenCapStyle::RoundCap);
+	m_Stroker.setJoinStyle(Qt::PenJoinStyle::RoundJoin);
+}
+
+void Figure::SetFigureType(FigureType type)
+{
+	m_Type = type;
+	if (m_Type == FigureType::Ellipse)
+	{
+		SetEllipseDrawSetting();
+	}
+	else if (m_Type == FigureType::Line)
+	{
+		SetLineDrawSetting();
+	}
 }
 
 void Figure::SetEllipseDrawSetting()
@@ -72,5 +87,14 @@ void Figure::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QW
 
 QPainterPath Figure::shape() const
 {
-	return m_Stroker.createStroke(path());
+	if (m_Type == FigureType::Ellipse)
+	{
+		return path();
+	}
+	else if (m_Type == FigureType::Line)
+	{
+		return m_Stroker.createStroke(path());
+	}
+	
+	return QPainterPath();
 }
