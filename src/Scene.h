@@ -1,7 +1,7 @@
 #pragma once
-#include <Figure.h>
-
 #include <QGraphicsScene>
+
+class Figure;
 
 class Scene final : public QGraphicsScene
 {
@@ -12,6 +12,8 @@ public:
 
 	~Scene();
 
+	inline void SetCurrentUsedFigure(Figure* figure) { m_CurrentUsedFigure = figure; };
+
 protected:
 
 	virtual void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
@@ -21,6 +23,10 @@ protected:
 
 private:
 
+	void CollisionResponce(Figure* figure);
+	void MergeFigures(Figure* figure, Figure* addedFigure);
+	void EraseFigure(Figure* figure, Figure* eraser);
+
 	enum class Modes
 	{
 		Pen,
@@ -28,7 +34,7 @@ private:
 		Eraser
 	};
 
-	Figure* m_DrawningPath = nullptr;
+	Figure* m_CurrentUsedFigure = nullptr;
 	Modes m_Mode = Modes::Pen;
 	bool m_LeftButtonPressed = false;
 	bool m_MouseMoved = false;

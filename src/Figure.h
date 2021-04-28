@@ -1,4 +1,5 @@
 #pragma once
+#include <Scene.h>
 
 #include <QGraphicsPathItem>
 #include <QObject>
@@ -12,7 +13,7 @@ class Figure final : public QObject, public QGraphicsPathItem
 
 public:
 
-	Figure();
+	Figure(Scene* scene);
 
 	void SetEllipseDrawSetting();
 	void SetLineDrawSetting();
@@ -25,6 +26,7 @@ private:
 	QPainterPathStroker m_Stroker;
 	QBrush m_Brush;
 	QPen m_Pen;
+	Scene* m_Scene = nullptr;
 
 	virtual void mouseMoveEvent(QGraphicsSceneMouseEvent* event) override;
 	virtual void mousePressEvent(QGraphicsSceneMouseEvent* event) override;

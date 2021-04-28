@@ -1,5 +1,6 @@
 #pragma once
 #include <Scene.h>
+#include <Figure.h>
 
 #include <QGraphicsSceneMouseEvent>
 #include <QKeyEvent>
@@ -43,12 +44,12 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent* event)
 
 	if (m_Mode == Modes::Pen)
 	{
-		m_DrawningPath = new Figure();
+		m_CurrentUsedFigure = new Figure(this);
 		QPainterPath path;
 		path.moveTo(event->scenePos());
-		m_DrawningPath->setPath(path);
+		m_CurrentUsedFigure->setPath(path);
 
-		addItem(m_DrawningPath);
+		addItem(m_CurrentUsedFigure);
 	}
 	else if(m_Mode == Modes::Selector)
 	{
@@ -66,12 +67,12 @@ void Scene::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 	}
 	m_MouseMoved = true;
 
-	if (m_Mode == Modes::Pen && m_DrawningPath)
+	if (m_Mode == Modes::Pen && m_CurrentUsedFigure)
 	{
-		m_DrawningPath->SetLineDrawSetting();
-		QPainterPath path = m_DrawningPath->path();
+		m_CurrentUsedFigure->SetLineDrawSetting();
+		QPainterPath path = m_CurrentUsedFigure->path();
 		path.lineTo(event->scenePos());
-		m_DrawningPath->setPath(path);
+		m_CurrentUsedFigure->setPath(path);
 	}
 	else if (m_Mode == Modes::Selector)
 	{
@@ -88,25 +89,64 @@ void Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 		return;
 	}
 
-	if (m_Mode == Modes::Pen && m_DrawningPath)
+	if (m_Mode == Modes::Pen && m_CurrentUsedFigure)
 	{
 		if (!m_MouseMoved)
 		{
-			m_DrawningPath->SetEllipseDrawSetting();
-			QPainterPath path = m_DrawningPath->path();
+			m_CurrentUsedFigure->SetEllipseDrawSetting();
+			QPainterPath path = m_CurrentUsedFigure->path();
 			path.addEllipse(event->scenePos(), WIDTH / 2, WIDTH / 2);
-			m_DrawningPath->setPath(path);			
+			m_CurrentUsedFigure->setPath(path);
 		}
-
-		m_DrawningPath = nullptr;
 	}
 	else if (m_Mode == Modes::Selector)
 	{
 		QGraphicsScene::mouseReleaseEvent(event);
 	}
 
+	if (m_CurrentUsedFigure)
+	{
+		CollisionResponce(m_CurrentUsedFigure);
+	}
+
+	m_CurrentUsedFigure = nullptr;
 	m_LeftButtonPressed = false;
 	m_MouseMoved = false;
 
 	update();
+}
+
+void Scene::CollisionResponce(Figure* figure)
+{
+	QList<QGraphicsItem*> collidedItems = collidingItems(figure);
+	
+	for (QGraphicsItem* item : collidedItems)
+	{
+		Figure* pathItem = dynamic_cast<Figure*>(item);
+		if (pathItem)
+		{
+			if (m_Mode == Modes::Pen || m_Mode == Modes::Selector)
+			{
+				MergeFigures(figure, pathItem);
+			}
+			else if (m_Mode == Modes::Eraser)
+			{
+				EraseFigure(pathItem, figure);
+			}
+		}
+	}
+}
+
+void Scene::MergeFigures(Figure* figure, Figure* addedFigure)
+{
+	QPainterPath path = figure->path();
+	path.addPath(addedFigure->path());
+	figure->setPath(path);
+
+	removeItem(addedFigure);
+}
+
+void Scene::EraseFigure(Figure* figure, Figure* eraser)
+{
+	//TODO
 }
