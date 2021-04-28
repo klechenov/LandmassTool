@@ -22,7 +22,7 @@ public:
 
 private:
 
-	QPointF m_StartMouseCoords;
+	QPointF m_PreviousCoords;
 	QPainterPathStroker m_Stroker;
 	QBrush m_Brush;
 	QPen m_Pen;

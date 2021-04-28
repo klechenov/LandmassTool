@@ -31,7 +31,7 @@ void Figure::SetLineDrawSetting()
 void Figure::mousePressEvent(QGraphicsSceneMouseEvent* event)
 {
 	m_Scene->SetCurrentUsedFigure(this);
-	m_StartMouseCoords = event->pos();
+	m_PreviousCoords = event->pos();
 	setCursor(QCursor(Qt::ClosedHandCursor));
 
 	Q_UNUSED(event);
@@ -39,7 +39,12 @@ void Figure::mousePressEvent(QGraphicsSceneMouseEvent* event)
 
 void Figure::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 {
-	setPos(mapToScene(event->pos() - m_StartMouseCoords));
+	const qreal x = event->pos().x() - m_PreviousCoords.x();
+	const qreal y = event->pos().y() - m_PreviousCoords.y();
+	QPainterPath painterPath = path();
+	painterPath.translate(x, y);
+	setPath(painterPath);
+	m_PreviousCoords = event->pos();
 }
 
 void Figure::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
