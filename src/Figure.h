@@ -23,6 +23,7 @@ public:
 
 	inline bool IsEmpty() const { return path().isEmpty(); };
 	void SetFigureType(FigureType type);
+	QPainterPath shape() const override;
 	
 private:
 
@@ -36,8 +37,8 @@ private:
 	virtual void mouseMoveEvent(QGraphicsSceneMouseEvent* event) override;
 	virtual void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
 	virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent* event) override;
+	virtual void mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event) override {};
 	virtual void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
-	QPainterPath shape() const override;
 	void SetEllipseDrawSetting();
 	void SetLineDrawSetting();
 };

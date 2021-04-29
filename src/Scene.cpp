@@ -127,7 +127,7 @@ void Scene::CollisionResponce(Figure* figure)
 		{
 			if (m_Mode == Modes::Pen || m_Mode == Modes::Selector)
 			{
-				MergeFigures(figure, pathItem);
+				MergeFigures(pathItem, figure);
 			}
 			else if (m_Mode == Modes::Eraser)
 			{
@@ -139,11 +139,21 @@ void Scene::CollisionResponce(Figure* figure)
 
 void Scene::MergeFigures(Figure* figure, Figure* addedFigure)
 {
-	QPainterPath path = figure->path();
-	path.addPath(addedFigure->path());
-	figure->setPath(path);
+	//QPainterPath newpath;
+	//newpath = figure->mapToScene(figure->path()) - addedFigure->mapToScene(addedFigure->shape());
+	//figure->setPath(figure->mapFromScene(newpath));
+	//removeItem(addedFigure);
 
-	removeItem(addedFigure);
+	/*QPainterPath figurePath = figure->path();
+	const QPainterPath intersected = figure->path().intersected(addedFigure->path());
+	QPainterPath newPath = addedFigure->path() - intersected;
+	if (!newPath.isEmpty())
+	{
+		figurePath.addPath(newPath);
+		figure->setPath(figurePath);
+	}
+
+	removeItem(addedFigure);*/
 }
 
 void Scene::EraseFigure(Figure* figure, Figure* eraser)

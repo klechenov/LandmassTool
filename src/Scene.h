@@ -14,14 +14,13 @@ public:
 
 	inline void SetCurrentUsedFigure(Figure* figure) { m_CurrentUsedFigure = figure; };
 
-protected:
+private:
 
 	virtual void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
 	virtual void mouseMoveEvent(QGraphicsSceneMouseEvent* event) override;
 	virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent* event) override;
+	virtual void mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event) override {};
 	virtual void keyPressEvent(QKeyEvent* keyEvent) override;
-
-private:
 
 	void CollisionResponce(Figure* figure);
 	void MergeFigures(Figure* figure, Figure* addedFigure);
