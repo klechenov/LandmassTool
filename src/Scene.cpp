@@ -42,7 +42,7 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent* event)
 
 	m_LeftButtonPressed = true;
 
-	if (m_Mode == Modes::Pen)
+	if (m_Mode == Modes::Pen || m_Mode == Modes::Eraser)
 	{
 		m_CurrentUsedFigure = new Figure(this);
 		QPainterPath path;
@@ -67,7 +67,7 @@ void Scene::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 	}
 	m_MouseMoved = true;
 
-	if (m_Mode == Modes::Pen && m_CurrentUsedFigure)
+	if ((m_Mode == Modes::Pen || m_Mode == Modes::Eraser) && m_CurrentUsedFigure)
 	{
 		m_CurrentUsedFigure->SetFigureType(FigureType::Line);
 		QPainterPath path = m_CurrentUsedFigure->path();
@@ -89,7 +89,7 @@ void Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 		return;
 	}
 
-	if (m_Mode == Modes::Pen && m_CurrentUsedFigure)
+	if ((m_Mode == Modes::Pen || m_Mode == Modes::Eraser) && m_CurrentUsedFigure)
 	{
 		if (!m_MouseMoved)
 		{
@@ -107,7 +107,12 @@ void Scene::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 	if (m_CurrentUsedFigure)
 	{
 		CollisionResponce(m_CurrentUsedFigure);
+		if (m_Mode == Modes::Eraser)
+		{
+			removeItem(m_CurrentUsedFigure);
+		}
 	}
+
 
 	m_CurrentUsedFigure = nullptr;
 	m_LeftButtonPressed = false;
@@ -139,11 +144,6 @@ void Scene::CollisionResponce(Figure* figure)
 
 void Scene::MergeFigures(Figure* figure, Figure* addedFigure)
 {
-	//QPainterPath newpath;
-	//newpath = figure->mapToScene(figure->path()) - addedFigure->mapToScene(addedFigure->shape());
-	//figure->setPath(figure->mapFromScene(newpath));
-	//removeItem(addedFigure);
-
 	/*QPainterPath figurePath = figure->path();
 	const QPainterPath intersected = figure->path().intersected(addedFigure->path());
 	QPainterPath newPath = addedFigure->path() - intersected;
@@ -152,11 +152,25 @@ void Scene::MergeFigures(Figure* figure, Figure* addedFigure)
 		figurePath.addPath(newPath);
 		figure->setPath(figurePath);
 	}
-
 	removeItem(addedFigure);*/
+
+	QPainterPath path = figure->path();
+	QPainterPath addedPath = addedFigure->path();
+	path.addPath(addedPath);
+	figure->setPath(path);
+	removeItem(addedFigure);
 }
 
 void Scene::EraseFigure(Figure* figure, Figure* eraser)
 {
-	//TODO
+	QPainterPath newpath;
+	newpath = figure->path() - eraser->shape();
+	if (newpath.isEmpty())
+	{
+		removeItem(figure);
+	}
+	else
+	{
+		figure->setPath(newpath);
+	}
 }
